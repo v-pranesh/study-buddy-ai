@@ -2,8 +2,10 @@ import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { StudyPlanForm } from "@/components/StudyPlanForm";
 import { StudyPlanResults } from "@/components/StudyPlanResults";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { StudyPlanInput, StudyPlanResponse } from "@/types/studyPlan";
 import { useToast } from "@/hooks/use-toast";
+import { Heart, Sparkles } from "lucide-react";
 
 const Index = () => {
   const [studyPlan, setStudyPlan] = useState<StudyPlanResponse | null>(null);
@@ -25,14 +27,6 @@ const Index = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        
-        if (response.status === 429) {
-          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
-        }
-        if (response.status === 402) {
-          throw new Error("Service temporarily unavailable. Please try again later.");
-        }
-        
         throw new Error(errorData.error || "Failed to generate study plan");
       }
 
@@ -40,8 +34,8 @@ const Index = () => {
       setStudyPlan(plan);
       
       toast({
-        title: "Study Plan Created! 🎉",
-        description: "Your personalized study plan is ready.",
+        title: "✨ Study Plan Ready!",
+        description: "Your personalized study plan has been generated.",
       });
     } catch (error) {
       console.error("Error:", error);
@@ -60,28 +54,38 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Subtle background pattern */}
-      <div className="fixed inset-0 gradient-calm opacity-50 pointer-events-none" />
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="fixed inset-0 gradient-calm opacity-30 pointer-events-none" />
       
       <main className="relative">
-        {!studyPlan ? (
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : studyPlan ? (
+          <section className="px-4 sm:px-6 lg:px-8 py-12">
+            <StudyPlanResults plan={studyPlan} onReset={handleReset} />
+          </section>
+        ) : (
           <>
             <HeroSection />
             <section className="px-4 sm:px-6 lg:px-8 pb-20">
               <StudyPlanForm onSubmit={handleSubmit} isLoading={isLoading} />
             </section>
           </>
-        ) : (
-          <section className="px-4 sm:px-6 lg:px-8 py-12">
-            <StudyPlanResults plan={studyPlan} onReset={handleReset} />
-          </section>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="relative py-8 text-center text-sm text-muted-foreground border-t border-border/50">
-        <p>Built with 💙 to help you study smarter</p>
+      <footer className="relative py-8 border-t border-border/50 print:hidden">
+        <div className="container mx-auto px-4 text-center space-y-2">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+            <span>Made with</span>
+            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+            <span>for students everywhere</span>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/70">
+            <Sparkles className="w-4 h-4" />
+            <span>Powered by AI</span>
+          </div>
+        </div>
       </footer>
     </div>
   );
