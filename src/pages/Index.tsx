@@ -5,7 +5,6 @@ import { StudyPlanResults } from "@/components/StudyPlanResults";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { StudyPlanInput, StudyPlanResponse } from "@/types/studyPlan";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Sparkles } from "lucide-react";
 
 const Index = () => {
   const [studyPlan, setStudyPlan] = useState<StudyPlanResponse | null>(null);
@@ -73,20 +72,6 @@ const Index = () => {
           </>
         )}
       </main>
-
-      <footer className="relative py-8 border-t border-border/50 print:hidden">
-        <div className="container mx-auto px-4 text-center space-y-2">
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <span>Made with</span>
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            <span>for students everywhere</span>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground/70">
-            <Sparkles className="w-4 h-4" />
-            <span>Powered by AI</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
